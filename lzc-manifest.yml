@@ -1,0 +1,35 @@
+name: Smarticky
+package: community.lazycat.czyt.smarticky
+version: 0.1.3
+description: "一个基于 Go 的现代便签应用，界面参考锤子便签设计。"
+homepage: https://github.com/dockers-x/smarticky
+author: czyt
+application:
+  subdomain: smarticky
+  background_task: true
+  public_path:
+    - /
+
+  upstreams:
+    - location: /
+      backend: http://smarticky:8080/
+
+services:
+  smarticky:
+    user: root
+    # czyt/smarticky:v0.1.3
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:c2ff83c6899e8ed5
+    binds:
+      - /lzcapp/var/data:/data
+    environment:
+      - SMARTICKY_DATA_DIR=/data
+      - PORT=8080
+
+locales:
+  zh:
+    name: "Smarticky"
+    description: "一个基于 Go 的现代便签应用，界面参考锤子便签设计。"
+
+  en:
+    name: "Smarticky"
+    description: "A modern notes application built with Go, inspired by Smartisan Notes."

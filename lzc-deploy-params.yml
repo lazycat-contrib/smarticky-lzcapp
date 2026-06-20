@@ -1,0 +1,54 @@
+params:
+  - id: admin_username
+    type: string
+    name: "Admin Username"
+    description: "Default admin username for initial setup"
+    default_value: "admin"
+
+  - id: admin_password
+    type: secret
+    name: "Admin Password"
+    description: "Default admin password for initial setup"
+    default_value: "admin"
+
+  - id: admin_email
+    type: string
+    name: "Admin Email"
+    description: "Admin email address for initial setup"
+    default_value: "admin@example.com"
+    optional: true
+
+  - id: admin_nickname
+    type: string
+    name: "Admin Nickname"
+    description: "Admin display name/nickname"
+    default_value: "Owner"
+    optional: true
+
+locales:
+  zh:
+    admin_username:
+      name: "管理员用户名"
+      description: "初始设置的管理员用户名"
+    admin_password:
+      name: "管理员密码"
+      description: "初始设置的管理员密码"
+    admin_email:
+      name: "管理员邮箱"
+      description: "管理员邮箱地址"
+    admin_nickname:
+      name: "管理员昵称"
+      description: "管理员显示名称/昵称"
+  en:
+    admin_username:
+      name: "Admin Username"
+      description: "Default admin username for initial setup"
+    admin_password:
+      name: "Admin Password"
+      description: "Default admin password for initial setup"
+    admin_email:
+      name: "Admin Email"
+      description: "Admin email address for initial setup"
+    admin_nickname:
+      name: "Admin Nickname"
+      description: "Admin display name/nickname"

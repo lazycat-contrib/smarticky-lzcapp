@@ -7,6 +7,14 @@ application:
     - location: /
       backend: http://smarticky:8080/
   injects:
+    - id: login-autofill
+      when:
+        - /login
+      do:
+        - src: builtin://simple-inject-password
+          params:
+            user: "{{.U.admin_username}}"
+            password: "{{.U.admin_password}}"
     - id: open-save-chooser
       on: browser
       when:
@@ -16,10 +24,14 @@ application:
 
 services:
   smarticky:
-    # czyt/smarticky:v0.3.0
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:244cd879d2a552be
+    # czyt/smarticky:v0.3.3
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:2aad2eb7694c3cdb
     binds:
       - /lzcapp/var/data:/data
     environment:
       - SMARTICKY_DATA_DIR=/data
       - PORT=8080
+      - SMARTICKY_ADMIN_USERNAME={{.U.admin_username}}
+      - SMARTICKY_ADMIN_PASSWORD={{.U.admin_password}}
+      - SMARTICKY_ADMIN_EMAIL={{.U.admin_email}}
+      - SMARTICKY_ADMIN_NICKNAME={{.U.admin_nickname}}

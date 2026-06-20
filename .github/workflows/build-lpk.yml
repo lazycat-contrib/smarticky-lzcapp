@@ -1,0 +1,59 @@
+name: Build Smarticky LPK
+
+on:
+  workflow_dispatch:
+    inputs:
+      smarticky_ref:
+        description: "Git ref to build from dockers-x/smarticky"
+        required: false
+        default: "main"
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout packaging
+        uses: actions/checkout@v4
+        with:
+          path: smarticky-lzcapp
+
+      - name: Checkout Smarticky
+        uses: actions/checkout@v4
+        with:
+          repository: dockers-x/smarticky
+          ref: ${{ inputs.smarticky_ref || 'main' }}
+          path: smarticky
+
+      - name: Set package variables
+        working-directory: smarticky-lzcapp
+        run: |
+          version="$(awk '/^version:/ { print $2; exit }' package.yml | tr -d '"')"
+          package_id="$(awk '/^package:/ { print $2; exit }' package.yml | tr -d '"')"
+          echo "PACKAGE_VERSION=${version}" >> "$GITHUB_ENV"
+          echo "LPK_NAME=${package_id}-v${version}.lpk" >> "$GITHUB_ENV"
+
+      - name: Install lzc-cli
+        run: npm install -g @lazycatcloud/lzc-cli@2.0.8
+
+      - name: Build LPK
+        working-directory: smarticky-lzcapp
+        run: lzc-cli project build -o "$LPK_NAME"
+
+      - name: Inspect LPK
+        working-directory: smarticky-lzcapp
+        run: lzc-cli lpk info "$LPK_NAME"
+
+      - name: Upload LPK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smarticky-lpk-${{ env.PACKAGE_VERSION }}
+          path: smarticky-lzcapp/${{ env.LPK_NAME }}
+          if-no-files-found: error

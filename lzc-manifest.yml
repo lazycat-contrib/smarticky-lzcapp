@@ -1,35 +1,29 @@
-name: Smarticky
-package: community.lazycat.czyt.smarticky
-version: 0.1.6
-description: "一个基于 Go 的现代便签应用，界面参考锤子便签设计。"
-homepage: https://github.com/dockers-x/smarticky
-author: czyt
 application:
   subdomain: smarticky
   background_task: true
   public_path:
     - /
-
   upstreams:
     - location: /
       backend: http://smarticky:8080/
+  injects:
+    - id: open-save-chooser
+      on: browser
+      when:
+        - "/*"
+      do:
+        - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
 
 services:
   smarticky:
     user: root
-    # czyt/smarticky:v0.1.6
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:9f5aa2ff448103ff
+    image: embed:smarticky
     binds:
       - /lzcapp/var/data:/data
     environment:
       - SMARTICKY_DATA_DIR=/data
       - PORT=8080
 
-locales:
-  zh:
-    name: "Smarticky"
-    description: "一个基于 Go 的现代便签应用，界面参考锤子便签设计。"
-
-  en:
-    name: "Smarticky"
-    description: "A modern notes application built with Go, inspired by Smartisan Notes."
+usage: |
+  打开应用后完成首次账号设置，即可使用 Smartisan 风格笔记工作台。
+  数据持久化保存在 /data，支持 Markdown 编辑和 Evernote ENEX 导入。

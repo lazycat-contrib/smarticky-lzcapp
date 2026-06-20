@@ -1,0 +1,39 @@
+FROM golang:1.25-alpine AS builder
+
+WORKDIR /src
+
+ARG SMARTICKY_VERSION=0.2.0
+
+RUN apk --no-cache add ca-certificates git nodejs npm
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN cd web/app && npm ci && npm run build
+
+RUN set -eux; \
+    build_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
+    build_version="$(cat .smarticky-version 2>/dev/null || echo "$SMARTICKY_VERSION")"; \
+    git_commit="$(cat .smarticky-git-commit 2>/dev/null || echo unknown)"; \
+    CGO_ENABLED=0 go build -trimpath \
+      -ldflags="-s -w -X smarticky/internal/version.Version=${build_version} -X smarticky/internal/version.BuildTime=${build_time} -X smarticky/internal/version.GitCommit=${git_commit}" \
+      -o smarticky ./cmd/server
+
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /src/smarticky ./smarticky
+COPY --from=builder /src/web/static ./web/static
+COPY --from=builder /src/web/templates ./web/templates
+
+ENV SMARTICKY_DATA_DIR=/data
+ENV PORT=8080
+
+EXPOSE 8080
+VOLUME ["/data"]
+
+ENTRYPOINT ["/app/smarticky"]

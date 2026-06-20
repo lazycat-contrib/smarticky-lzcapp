@@ -1,0 +1,19 @@
+package: community.lazycat.czyt.smarticky
+version: 0.2.0
+name: Smarticky
+description: "A modern Go notes workspace with Markdown editing and Evernote import."
+author: czyt
+homepage: https://github.com/dockers-x/smarticky
+min_os_version: 1.5.0
+
+permissions:
+  required:
+    - net.internet
+
+locales:
+  zh:
+    name: "Smarticky"
+    description: "一个基于 Go 的现代笔记工作台，支持 Markdown 编辑与 Evernote 导入。"
+  en:
+    name: "Smarticky"
+    description: "A modern Go notes workspace with Markdown editing and Evernote import."

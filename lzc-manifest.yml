@@ -16,14 +16,10 @@ application:
 
 services:
   smarticky:
-    user: root
-    image: embed:smarticky
+    # czyt/smarticky:v0.3.0
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:244cd879d2a552be
     binds:
       - /lzcapp/var/data:/data
     environment:
       - SMARTICKY_DATA_DIR=/data
       - PORT=8080
-
-usage: |
-  打开应用后完成首次账号设置，即可使用 Smartisan 风格笔记工作台。
-  数据持久化保存在 /data，支持 Markdown 编辑和 Evernote ENEX 导入。

@@ -24,8 +24,8 @@ application:
 
 services:
   smarticky:
-    # czyt/smarticky:v0.3.4
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:bde7792bc095a30e
+    # czyt/smarticky:v0.4.0
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:fe5eaa46cc9f32b4
     binds:
       - /lzcapp/var/data:/data
     environment:
@@ -35,3 +35,4 @@ services:
       - SMARTICKY_ADMIN_PASSWORD={{.U.admin_password}}
       - SMARTICKY_ADMIN_EMAIL={{.U.admin_email}}
       - SMARTICKY_ADMIN_NICKNAME={{.U.admin_nickname}}
+      - SMARTICKY_TRUST_LAZYCAT_HEADERS=true

@@ -1,5 +1,5 @@
 package: community.lazycat.czyt.smarticky
-version: 0.3.4
+version: 0.4.0
 name: Smarticky
 description: "A modern Go notes workspace with Markdown editing and Evernote import."
 author: czyt
@@ -9,6 +9,7 @@ min_os_version: 1.5.0
 permissions:
   required:
     - net.internet
+    - lzcapp.user_delegate
 
 locales:
   zh:

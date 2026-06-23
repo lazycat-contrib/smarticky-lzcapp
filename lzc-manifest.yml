@@ -24,8 +24,8 @@ application:
 
 services:
   smarticky:
-    # czyt/smarticky:v0.6.8
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:5d98c48701bebf46
+    # czyt/smarticky:v0.7.0
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:6b7369fc2ac4061d
     binds:
       - /lzcapp/var/data:/data
     environment:

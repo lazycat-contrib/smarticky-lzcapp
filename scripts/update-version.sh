@@ -25,12 +25,14 @@ Smarticky LPK 一键更新脚本
   --changelog <text>           发布日志，默认: "更新到 <版本号>"
   --skip-copy                  跳过镜像复制，直接使用 --source-image 作为 manifest 镜像
   --skip-build                 只更新文件，不构建 LPK
+  --git-push                   发布成功后自动 git 提交并推送
   -h, --help                   显示帮助
 
 环境变量:
   PUBLISH=1          等同于 --publish
   SKIP_COPY=1        等同于 --skip-copy
   SKIP_BUILD=1       等同于 --skip-build
+  GIT_PUSH=1         等同于 --git-push
   SMARTICKY_CONTEXT  Smarticky 源码目录（本地构建时使用）
 USAGE
 }
@@ -67,6 +69,7 @@ PUBLISH="${PUBLISH:-0}"
 CHANGELOG="${CHANGELOG:-}"
 SKIP_COPY="${SKIP_COPY:-0}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
+GIT_PUSH="${GIT_PUSH:-0}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -76,6 +79,7 @@ while [[ $# -gt 0 ]]; do
     --changelog) CHANGELOG="${2:-}"; shift 2 ;;
     --skip-copy) SKIP_COPY=1; shift ;;
     --skip-build) SKIP_BUILD=1; shift ;;
+    --git-push) GIT_PUSH=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) die "未知选项: $1" ;;
   esac
@@ -221,6 +225,34 @@ if [[ "$PUBLISH" == "1" ]]; then
   success "发布完成!"
 fi
 
+# Git 提交并推送（仅在发布成功后）
+if [[ "$GIT_PUSH" == "1" ]]; then
+  if [[ "$PUBLISH" != "1" ]]; then
+    warn "未发布（缺少 --publish），跳过 git 提交推送"
+  else
+    command -v git >/dev/null 2>&1 || die "需要 git 命令"
+    cd "$PROJECT_DIR"
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "当前目录不是 git 仓库"
+
+    info "提交并推送到 git..."
+    git add -A
+    if git diff --cached --quiet; then
+      warn "没有需要提交的变更，跳过提交"
+    else
+      git commit -m "bump $VERSION"
+      success "已提交: bump $VERSION"
+    fi
+
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    if git rev-parse --abbrev-ref --symbolic-full-name "@{u}" >/dev/null 2>&1; then
+      git push
+    else
+      git push -u origin "$BRANCH"
+    fi
+    success "已推送到远程分支: $BRANCH"
+  fi
+fi
+
 # 输出摘要
 echo ""
 echo "========================================="
@@ -231,4 +263,5 @@ echo "版本:     $CURRENT_VERSION → $VERSION"
 echo "镜像:     $LAZYCAT_IMAGE"
 echo "LPK 文件: $LPK_FILE"
 echo "发布状态: $([ "$PUBLISH" == "1" ] && echo "已发布" || echo "未发布")"
+echo "Git 推送: $([ "$GIT_PUSH" == "1" ] && [ "$PUBLISH" == "1" ] && echo "已推送" || echo "未推送")"
 echo "========================================="

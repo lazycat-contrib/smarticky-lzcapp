@@ -1,1 +1,3 @@
-.lzc-build/
+*.lpk
+dist/
+.lazycat-action/

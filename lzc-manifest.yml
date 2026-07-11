@@ -21,11 +21,11 @@ application:
         - "/*"
       do:
         - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
-
 services:
   smarticky:
     # czyt/smarticky:v0.7.13
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:537993eceaadce4c
+    # upstream: docker.io/czyt/smarticky:v0.7.14
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:6453e1544c2a2a87
     binds:
       - /lzcapp/var/data:/data
     environment:

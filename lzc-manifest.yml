@@ -24,8 +24,8 @@ application:
 services:
   smarticky:
     # czyt/smarticky:v0.7.13
-    # upstream: docker.io/czyt/smarticky:v0.7.15
-    image: registry.lazycat.cloud/czyt/czyt/smarticky:5b3288a6419838e1
+    # upstream: docker.io/czyt/smarticky:v0.8.0
+    image: registry.lazycat.cloud/czyt/czyt/smarticky:7e95bc66547fdb1a
     binds:
       - /lzcapp/var/data:/data
     environment:
